@@ -32,6 +32,7 @@ describe('action', () => {
     logger['info'] = jest.fn()
     logger.action('app_start', { prop: 'value' })
     expect(logger.info).toHaveBeenCalledWith('app_start', {
+      actionId: expect.any(String),
       prop: 'value',
     })
   })
@@ -51,6 +52,7 @@ describe('action', () => {
     const actions = logger.action('app_start', { prop: 'value' })
     actions.success({ prop2: 'value2' })
     expect(logger.info).toHaveBeenCalledWith('app_start_success', {
+      actionId: expect.any(String),
       prop: 'value',
       prop2: 'value2',
     })
@@ -62,6 +64,7 @@ describe('action', () => {
     const actions = logger.action('app_start', { prop: 'value' })
     actions.failure(new Error('500'), { prop2: 'value2' })
     expect(logger.error).toHaveBeenCalledWith('app_start_failure', {
+      actionId: expect.any(String),
       error: new Error('500'),
       prop: 'value',
       prop2: 'value2',
