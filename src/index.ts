@@ -84,7 +84,7 @@ export class Logger {
       const trace = { loggerId: this.id, actionId }
       let payload = JSON.stringify({ timestamp, level, message, trace, ...this.loggerMeta, ...meta })
       if (this.options.colors) {
-        payload = `${COLORS[level]}${payload}${COLORS.reset}`
+        payload = payload.replace(`"${level}"`, `"${COLORS[level]}${level}${COLORS.reset}"`)
       }
       console[level](payload)
     }

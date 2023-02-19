@@ -158,7 +158,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('info', 'message')
     expect(console.info).toHaveBeenCalledWith(
-      '\x1b[32m{"timestamp":"2022-01-01T00:00:00.000Z","level":"info","message":"message","trace":{"loggerId":"random string"}}\x1b[0m'
+      '{"timestamp":"2022-01-01T00:00:00.000Z","level":"\x1b[32minfo\x1b[0m","message":"message","trace":{"loggerId":"random string"}}'
     )
   })
 
@@ -166,7 +166,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('warn', 'message')
     expect(console.warn).toHaveBeenCalledWith(
-      '\x1b[33m{"timestamp":"2022-01-01T00:00:00.000Z","level":"warn","message":"message","trace":{"loggerId":"random string"}}\x1b[0m'
+      '{"timestamp":"2022-01-01T00:00:00.000Z","level":"\x1b[33mwarn\x1b[0m","message":"message","trace":{"loggerId":"random string"}}'
     )
   })
 
@@ -174,7 +174,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('error', 'message')
     expect(console.error).toHaveBeenCalledWith(
-      '\x1b[31m{"timestamp":"2022-01-01T00:00:00.000Z","level":"error","message":"message","trace":{"loggerId":"random string"}}\x1b[0m'
+      '{"timestamp":"2022-01-01T00:00:00.000Z","level":"\x1b[31merror\x1b[0m","message":"message","trace":{"loggerId":"random string"}}'
     )
   })
 })
