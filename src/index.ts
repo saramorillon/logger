@@ -82,7 +82,7 @@ export class Logger {
     if (!this.options.silent) {
       const timestamp = new Date().toISOString()
       const trace = { loggerId: this.id, actionId }
-      let payload = JSON.stringify({ timestamp, level, message, trace, ...this.loggerMeta, ...meta })
+      let payload = JSON.stringify({ level, timestamp, message, trace, ...this.loggerMeta, ...meta })
       if (this.options.colors) {
         payload = payload.replace(`"${level}"`, `"${COLORS[level]}${level}${COLORS.reset}"`)
       }

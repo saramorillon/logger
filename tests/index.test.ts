@@ -144,8 +144,8 @@ describe('log', () => {
     logger['log']('info', 'message', { prop2: 'value2' })
     expect(console.info).toHaveBeenCalledWith(
       JSON.stringify({
-        timestamp: '2022-01-01T00:00:00.000Z',
         level: 'info',
+        timestamp: '2022-01-01T00:00:00.000Z',
         message: 'message',
         trace: { loggerId: 'random string' },
         prop1: 'value1',
@@ -158,7 +158,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('info', 'message')
     expect(console.info).toHaveBeenCalledWith(
-      '{"timestamp":"2022-01-01T00:00:00.000Z","level":"\x1b[32minfo\x1b[0m","message":"message","trace":{"loggerId":"random string"}}'
+      '{"level":"\x1b[32minfo\x1b[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}'
     )
   })
 
@@ -166,7 +166,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('warn', 'message')
     expect(console.warn).toHaveBeenCalledWith(
-      '{"timestamp":"2022-01-01T00:00:00.000Z","level":"\x1b[33mwarn\x1b[0m","message":"message","trace":{"loggerId":"random string"}}'
+      '{"level":"\x1b[33mwarn\x1b[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}'
     )
   })
 
@@ -174,7 +174,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('error', 'message')
     expect(console.error).toHaveBeenCalledWith(
-      '{"timestamp":"2022-01-01T00:00:00.000Z","level":"\x1b[31merror\x1b[0m","message":"message","trace":{"loggerId":"random string"}}'
+      '{"level":"\x1b[31merror\x1b[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}'
     )
   })
 })
