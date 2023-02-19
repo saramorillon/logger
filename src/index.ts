@@ -22,10 +22,11 @@ export interface ILoggerOptions {
 
 export class Logger {
   private id: string
-  private parsers: Record<string, Parser> = {}
+  private parsers: Record<string, Parser>
 
   constructor(private options: ILoggerOptions = {}, private loggerMeta: Record<string, unknown> = {}) {
     this.id = randomBytes(8).toString('hex')
+    this.parsers = {}
   }
 
   addMeta(meta: Record<string, unknown>): this {
@@ -81,16 +82,11 @@ export class Logger {
     if (!this.options.silent) {
       const timestamp = new Date().toISOString()
       const trace = { loggerId: this.id, actionId }
-      console[level](
-        JSON.stringify({
-          timestamp,
-          level: this.options.colors ? `${COLORS[level]}${level}${COLORS.reset}` : level,
-          message,
-          trace,
-          ...this.loggerMeta,
-          ...meta,
-        })
-      )
+      let payload = JSON.stringify({ timestamp, level, message, trace, ...this.loggerMeta, ...meta })
+      if (this.options.colors) {
+        payload = `${COLORS[level]}${payload}${COLORS.reset}`
+      }
+      console[level](payload)
     }
     return this
   }
