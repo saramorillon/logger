@@ -81,14 +81,16 @@ export class Logger {
     if (!this.options.silent) {
       const timestamp = new Date().toISOString()
       const trace = { loggerId: this.id, actionId }
-      console[level]({
-        timestamp,
-        level: this.options.colors ? `${COLORS[level]}${level}${COLORS.reset}` : level,
-        message,
-        trace,
-        ...this.loggerMeta,
-        ...meta,
-      })
+      console[level](
+        JSON.stringify({
+          timestamp,
+          level: this.options.colors ? `${COLORS[level]}${level}${COLORS.reset}` : level,
+          message,
+          trace,
+          ...this.loggerMeta,
+          ...meta,
+        })
+      )
     }
     return this
   }
