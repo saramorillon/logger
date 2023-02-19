@@ -12,7 +12,7 @@ beforeEach(() => {
 
 describe('constructor', () => {
   it('should init logger id', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     expect(logger['id']).toBe('random string')
   })
 
@@ -29,13 +29,13 @@ describe('constructor', () => {
 
 describe('addMeta', () => {
   it('should not add meta if logger is silent', () => {
-    const logger = new Logger({ silent: true }, {})
+    const logger = new Logger({ silent: true })
     logger.addMeta({ prop: 'value' })
     expect(logger['loggerMeta']).toEqual({})
   })
 
   it('should add meta if logger', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger.addMeta({ prop: 'value' })
     expect(logger['loggerMeta']).toEqual({ prop: 'value' })
   })
@@ -43,32 +43,32 @@ describe('addMeta', () => {
 
 describe('parseMeta', () => {
   it('should return empty object if logger is silent', () => {
-    const logger = new Logger({ silent: true }, {})
+    const logger = new Logger({ silent: true })
     const result = logger['parseMeta']({ prop: 'value' })
     expect(result).toEqual({})
   })
 
   it('should parse empty meta', () => {
-    const logger = new Logger({ silent: true }, {})
+    const logger = new Logger({ silent: true })
     const result = logger['parseMeta']()
     expect(result).toEqual({})
   })
 
   it('should return parsed meta if a parser matches', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger.setParser('prop', (val) => `parsed ${val}`)
     const result = logger['parseMeta']({ prop: 'value' })
     expect(result).toEqual({ prop: 'parsed value' })
   })
 
   it('should return meta as is', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     const result = logger['parseMeta']({ prop: 'value' })
     expect(result).toEqual({ prop: 'value' })
   })
 
   it('should inspect meta if meta cannot be stringified', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     const prop: Record<string, unknown> = {}
     prop.prop = prop
     const result = logger['parseMeta'](prop)
@@ -79,7 +79,7 @@ describe('parseMeta', () => {
 describe('setParser', () => {
   it('should set parser', () => {
     const parser = jest.fn()
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger.setParser('toto', parser)
     expect(logger['parsers']['toto']).toBe(parser)
   })
@@ -87,7 +87,7 @@ describe('setParser', () => {
 
 describe('action', () => {
   it('should log info for action meta', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger['info'] = jest.fn()
     logger.action('message', { prop: 'value' })
     expect(logger.info).toHaveBeenCalledWith('message', {
@@ -97,7 +97,7 @@ describe('action', () => {
   })
 
   it('should return action', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     const result = logger.action('message', { prop: 'value' })
     expect(result).toEqual({
       success: expect.any(Function),
@@ -106,7 +106,7 @@ describe('action', () => {
   })
 
   it('should log success', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger['info'] = jest.fn()
     const actions = logger.action('message', { prop: 'value' })
     actions.success({ prop2: 'value2' })
@@ -118,7 +118,7 @@ describe('action', () => {
   })
 
   it('should log failure', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger['error'] = jest.fn()
     const actions = logger.action('message', { prop: 'value' })
     actions.failure(new Error('500'), { prop2: 'value2' })
@@ -132,14 +132,14 @@ describe('action', () => {
 
 describe('log', () => {
   it('should do nothing if logger is silent', () => {
-    const logger = new Logger({ silent: true }, {})
+    const logger = new Logger({ silent: true })
     logger.addMeta({ prop1: 'value1' })
     logger['log']('info', 'message')
     expect(console.info).not.toHaveBeenCalled()
   })
 
   it('should log message with meta', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger.addMeta({ prop1: 'value1' })
     logger['log']('info', 'message', { prop2: 'value2' })
     expect(console.info).toHaveBeenCalledWith({
@@ -152,28 +152,43 @@ describe('log', () => {
     })
   })
 
-  it('should log info', () => {
-    const logger = new Logger({}, {})
+  it('should log info with colors', () => {
+    const logger = new Logger({ colors: true })
     logger['log']('info', 'message')
-    expect(console.info).toHaveBeenCalled()
+    expect(console.info).toHaveBeenCalledWith({
+      timestamp: '2022-01-01T00:00:00.000Z',
+      level: '\x1b[32minfo\x1b[0m',
+      message: 'message',
+      trace: { loggerId: 'random string' },
+    })
   })
 
-  it('should log warn', () => {
-    const logger = new Logger({}, {})
+  it('should log warn with colors', () => {
+    const logger = new Logger({ colors: true })
     logger['log']('warn', 'message')
-    expect(console.warn).toHaveBeenCalled()
+    expect(console.warn).toHaveBeenCalledWith({
+      timestamp: '2022-01-01T00:00:00.000Z',
+      level: '\x1b[33mwarn\x1b[0m',
+      message: 'message',
+      trace: { loggerId: 'random string' },
+    })
   })
 
-  it('should log error', () => {
-    const logger = new Logger({}, {})
+  it('should log error with colors', () => {
+    const logger = new Logger({ colors: true })
     logger['log']('error', 'message')
-    expect(console.error).toHaveBeenCalled()
+    expect(console.error).toHaveBeenCalledWith({
+      timestamp: '2022-01-01T00:00:00.000Z',
+      level: '\x1b[31merror\x1b[0m',
+      message: 'message',
+      trace: { loggerId: 'random string' },
+    })
   })
 })
 
 describe('info', () => {
   it('should log message and parsed meta', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger.setParser('prop', (val) => `parsed ${val}`)
     logger['log'] = jest.fn()
     logger.info('message', { prop: 'value' })
@@ -183,7 +198,7 @@ describe('info', () => {
 
 describe('warn', () => {
   it('should log message and parsed meta', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger.setParser('prop', (val) => `parsed ${val}`)
     logger['log'] = jest.fn()
     logger.warn('message', { prop: 'value' })
@@ -193,7 +208,7 @@ describe('warn', () => {
 
 describe('error', () => {
   it('should log message and parsed meta', () => {
-    const logger = new Logger({}, {})
+    const logger = new Logger()
     logger.setParser('prop', (val) => `parsed ${val}`)
     logger['log'] = jest.fn()
     logger.error('message', new Error('500'), { prop: 'value' })

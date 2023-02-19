@@ -1,6 +1,13 @@
 import { randomBytes } from 'crypto'
 import { inspect } from 'util'
 
+const COLORS = {
+  info: '\x1b[32m',
+  warn: '\x1b[33m',
+  error: '\x1b[31m',
+  reset: '\x1b[0m',
+}
+
 export interface IAction {
   success(meta?: Record<string, unknown>): Logger
   failure(error: unknown, meta?: Record<string, unknown>): Logger
@@ -10,6 +17,7 @@ export type Parser = (value?: unknown) => Record<string, unknown> | string | boo
 
 export interface ILoggerOptions {
   silent?: boolean
+  colors?: boolean
 }
 
 export class Logger {
@@ -73,7 +81,14 @@ export class Logger {
     if (!this.options.silent) {
       const timestamp = new Date().toISOString()
       const trace = { loggerId: this.id, actionId }
-      console[level]({ timestamp, level, message, trace, ...this.loggerMeta, ...meta })
+      console[level]({
+        timestamp,
+        level: this.options.colors ? `${COLORS[level]}${level}${COLORS.reset}` : level,
+        message,
+        trace,
+        ...this.loggerMeta,
+        ...meta,
+      })
     }
     return this
   }
