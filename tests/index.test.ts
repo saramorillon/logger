@@ -85,11 +85,11 @@ describe('setParser', () => {
   })
 })
 
-describe('action', () => {
+describe('start', () => {
   it('should log info for action meta', () => {
     const logger = new Logger()
     logger['info'] = jest.fn()
-    logger.action('message', { prop: 'value' })
+    logger.start('message', { prop: 'value' })
     expect(logger.info).toHaveBeenCalledWith('message', {
       actionId: expect.any(String),
       prop: 'value',
@@ -98,7 +98,7 @@ describe('action', () => {
 
   it('should return action', () => {
     const logger = new Logger()
-    const result = logger.action('message', { prop: 'value' })
+    const result = logger.start('message', { prop: 'value' })
     expect(result).toEqual({
       success: expect.any(Function),
       failure: expect.any(Function),
@@ -108,7 +108,7 @@ describe('action', () => {
   it('should log success', () => {
     const logger = new Logger()
     logger['info'] = jest.fn()
-    const actions = logger.action('message', { prop: 'value' })
+    const actions = logger.start('message', { prop: 'value' })
     actions.success({ prop2: 'value2' })
     expect(logger.info).toHaveBeenCalledWith('message_success', {
       actionId: expect.any(String),
@@ -120,7 +120,7 @@ describe('action', () => {
   it('should log failure', () => {
     const logger = new Logger()
     logger['error'] = jest.fn()
-    const actions = logger.action('message', { prop: 'value' })
+    const actions = logger.start('message', { prop: 'value' })
     actions.failure(new Error('500'), { prop2: 'value2' })
     expect(logger.error).toHaveBeenCalledWith('message_failure', new Error('500'), {
       actionId: expect.any(String),

@@ -60,7 +60,7 @@ export class Logger {
     return this
   }
 
-  action(message: string, meta?: Record<string, unknown>): IAction {
+  start(message: string, meta?: Record<string, unknown>): IAction {
     const actionId = randomBytes(8).toString('hex')
     const actionMeta = { ...this.parseMeta(meta), actionId }
     this.info(message, actionMeta)
