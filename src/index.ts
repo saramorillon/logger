@@ -1,5 +1,4 @@
 import { randomBytes } from 'crypto'
-import { inspect } from 'util'
 
 const COLORS = {
   info: '\x1b[32m',
@@ -13,8 +12,6 @@ export interface IAction {
   failure(error: unknown, meta?: Record<string, unknown>): Logger
 }
 
-export type Parser = (value?: unknown) => Record<string, unknown> | string | boolean | number | null | undefined
-
 export interface ILoggerOptions {
   silent?: boolean
   colors?: boolean
@@ -22,54 +19,28 @@ export interface ILoggerOptions {
 
 export class Logger {
   private id: string
-  private parsers: Record<string, Parser>
 
   constructor(private options: ILoggerOptions = {}, private loggerMeta: Record<string, unknown> = {}) {
     this.id = randomBytes(8).toString('hex')
-    this.parsers = {}
   }
 
   addMeta(meta: Record<string, unknown>): this {
     if (!this.options.silent) {
-      this.loggerMeta = { ...this.loggerMeta, ...this.parseMeta(meta) }
+      this.loggerMeta = { ...this.loggerMeta, ...meta }
     }
-    return this
-  }
-
-  private parseMeta(meta: Record<string, unknown> = {}) {
-    const result: Record<string, unknown> = {}
-    if (!this.options.silent) {
-      for (const [name, value] of Object.entries(meta)) {
-        if (this.parsers[name]) {
-          result[name] = this.parsers[name](value)
-        } else {
-          result[name] = value
-        }
-        try {
-          JSON.stringify(result[name])
-        } catch (error) {
-          result[name] = inspect(result[name])
-        }
-      }
-    }
-    return result
-  }
-
-  setParser(name: string, parser: Parser): this {
-    this.parsers[name] = parser
     return this
   }
 
   start(message: string, meta?: Record<string, unknown>): IAction {
     const actionId = randomBytes(8).toString('hex')
-    const actionMeta = { ...this.parseMeta(meta), actionId }
+    const actionMeta = { ...meta, actionId }
     this.info(message, actionMeta)
     return {
       success: (meta?: Record<string, unknown>) => {
-        return this.info(`${message}_success`, { ...actionMeta, ...this.parseMeta(meta) })
+        return this.info(`${message}_success`, { ...actionMeta, ...meta })
       },
       failure: (error: unknown, meta?: Record<string, unknown>) => {
-        return this.error(`${message}_failure`, error, { ...actionMeta, ...this.parseMeta(meta) })
+        return this.error(`${message}_failure`, error, { ...actionMeta, ...meta })
       },
     }
   }
@@ -92,14 +63,14 @@ export class Logger {
   }
 
   info(message: string, meta?: Record<string, unknown>): this {
-    return this.log('info', message, this.parseMeta(meta))
+    return this.log('info', message, meta)
   }
 
   warn(message: string, meta?: Record<string, unknown>): this {
-    return this.log('warn', message, this.parseMeta(meta))
+    return this.log('warn', message, meta)
   }
 
   error(message: string, error: unknown, meta?: Record<string, unknown>): this {
-    return this.log('error', message, this.parseMeta({ error, ...meta }))
+    return this.log('error', message, { error, ...meta })
   }
 }
