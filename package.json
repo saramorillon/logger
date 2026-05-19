@@ -20,8 +20,8 @@
   "devDependencies": {
     "@types/node": "24.8.0",
     "mockdate": "3.0.5",
-    "oxfmt": "0.51.0",
-    "oxlint": "1.66.0",
+    "oxfmt": "0.50.0",
+    "oxlint": "1.65.0",
     "typescript": "5.9.3",
     "vitest": "4.1.6"
   }
