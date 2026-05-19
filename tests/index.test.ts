@@ -70,6 +70,7 @@ describe('start', () => {
       actionId: expect.any(String),
       prop: 'value',
       prop2: 'value2',
+      duration: 0,
     })
   })
 
@@ -82,6 +83,7 @@ describe('start', () => {
       actionId: expect.any(String),
       prop: 'value',
       prop2: 'value2',
+      duration: 0,
     })
   })
 })

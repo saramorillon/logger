@@ -37,11 +37,13 @@ export class Logger {
   public start(message: string, meta?: Record<string, unknown>): IAction {
     const actionId = randomBytes(8).toString('hex')
     const actionMeta = { ...meta, actionId }
+    const start = Date.now()
     this.info(message, actionMeta)
     return {
-      success: (meta?: Record<string, unknown>) => this.info(`${message}_success`, { ...actionMeta, ...meta }),
+      success: (meta?: Record<string, unknown>) =>
+        this.info(`${message}_success`, { duration: Date.now() - start, ...actionMeta, ...meta }),
       failure: (error: unknown, meta?: Record<string, unknown>) =>
-        this.error(`${message}_failure`, error, { ...actionMeta, ...meta }),
+        this.error(`${message}_failure`, error, { duration: Date.now() - start, ...actionMeta, ...meta }),
     }
   }
 
