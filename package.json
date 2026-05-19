@@ -25,7 +25,9 @@
     "typescript": "5.9.3",
     "vitest": "4.1.6"
   },
-  "resolutions": {
-    "postcss": "8.5.14"
+  "pnpm": {
+    "overrides": {
+      "postcss": "8.5.14"
+    }
   }
 }
