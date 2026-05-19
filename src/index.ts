@@ -9,6 +9,7 @@ const COLORS = {
 
 export interface IAction {
   success(meta?: Record<string, unknown>): Logger
+  skip(reason: string, meta?: Record<string, unknown>): Logger
   failure(error: unknown, meta?: Record<string, unknown>): Logger
 }
 
@@ -42,6 +43,8 @@ export class Logger {
     return {
       success: (meta?: Record<string, unknown>) =>
         this.info(`${message}_success`, { duration: Date.now() - start, ...actionMeta, ...meta }),
+      skip: (reason: string, meta?: Record<string, unknown>) =>
+        this.info(`${message}_skip`, { duration: Date.now() - start, reason, ...actionMeta, ...meta }),
       failure: (error: unknown, meta?: Record<string, unknown>) =>
         this.error(`${message}_failure`, error, { duration: Date.now() - start, ...actionMeta, ...meta }),
     }

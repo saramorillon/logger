@@ -57,6 +57,7 @@ describe('start', () => {
     const result = logger.start('message', { prop: 'value' })
     expect(result).toEqual({
       success: expect.any(Function),
+      skip: expect.any(Function),
       failure: expect.any(Function),
     })
   })
@@ -71,6 +72,20 @@ describe('start', () => {
       prop: 'value',
       prop2: 'value2',
       duration: 0,
+    })
+  })
+
+  it('should log skip', () => {
+    const logger = new Logger()
+    logger['info'] = vi.fn()
+    const actions = logger.start('message', { prop: 'value' })
+    actions.skip('reason', { prop2: 'value2' })
+    expect(logger.info).toHaveBeenCalledWith('message_skip', {
+      actionId: expect.any(String),
+      prop: 'value',
+      prop2: 'value2',
+      duration: 0,
+      reason: 'reason',
     })
   })
 
