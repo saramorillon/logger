@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git@github.com:saramorillon/logger.git"
+    "url": "https://github.com/Sara-Morillon/logger"
   },
   "scripts": {
     "prepublish": "pnpm build",
