@@ -1,10 +1,10 @@
-import { randomBytes } from 'crypto'
+import { randomBytes } from 'node:crypto'
 
 const COLORS = {
-  info: '\x1b[32m',
-  warn: '\x1b[33m',
-  error: '\x1b[31m',
-  reset: '\x1b[0m',
+  info: '\u001B[32m',
+  warn: '\u001B[33m',
+  error: '\u001B[31m',
+  reset: '\u001B[0m',
 }
 
 export interface IAction {
@@ -20,35 +20,35 @@ export interface ILoggerOptions {
 export class Logger {
   private id: string
 
-  constructor(private options: ILoggerOptions = {}, private loggerMeta: Record<string, unknown> = {}) {
+  public constructor(
+    private options: ILoggerOptions = {},
+    private loggerMeta: Record<string, unknown> = {},
+  ) {
     this.id = randomBytes(8).toString('hex')
   }
 
-  addMeta(meta: Record<string, unknown>): this {
+  public addMeta(meta: Record<string, unknown>): this {
     if (!this.options.silent) {
       this.loggerMeta = { ...this.loggerMeta, ...meta }
     }
     return this
   }
 
-  start(message: string, meta?: Record<string, unknown>): IAction {
+  public start(message: string, meta?: Record<string, unknown>): IAction {
     const actionId = randomBytes(8).toString('hex')
     const actionMeta = { ...meta, actionId }
     this.info(message, actionMeta)
     return {
-      success: (meta?: Record<string, unknown>) => {
-        return this.info(`${message}_success`, { ...actionMeta, ...meta })
-      },
-      failure: (error: unknown, meta?: Record<string, unknown>) => {
-        return this.error(`${message}_failure`, error, { ...actionMeta, ...meta })
-      },
+      success: (meta?: Record<string, unknown>) => this.info(`${message}_success`, { ...actionMeta, ...meta }),
+      failure: (error: unknown, meta?: Record<string, unknown>) =>
+        this.error(`${message}_failure`, error, { ...actionMeta, ...meta }),
     }
   }
 
   private log(
     level: 'info' | 'warn' | 'error',
     message: string,
-    { actionId, ...meta }: Record<string, unknown> = {}
+    { actionId, ...meta }: Record<string, unknown> = {},
   ): this {
     if (!this.options.silent) {
       const timestamp = new Date().toISOString()
@@ -62,15 +62,15 @@ export class Logger {
     return this
   }
 
-  info(message: string, meta?: Record<string, unknown>): this {
+  public info(message: string, meta?: Record<string, unknown>): this {
     return this.log('info', message, meta)
   }
 
-  warn(message: string, meta?: Record<string, unknown>): this {
+  public warn(message: string, meta?: Record<string, unknown>): this {
     return this.log('warn', message, meta)
   }
 
-  error(message: string, error: unknown, meta?: Record<string, unknown>): this {
+  public error(message: string, error: unknown, meta?: Record<string, unknown>): this {
     return this.log('error', message, { error, ...meta })
   }
 }

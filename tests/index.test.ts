@@ -4,10 +4,10 @@ import { Logger } from '../src'
 mockdate.set('2022-01-01T00:00:00.000Z')
 
 beforeEach(() => {
-  jest.spyOn(Buffer.prototype, 'toString').mockReturnValue('random string')
-  jest.spyOn(console, 'info').mockImplementation(() => undefined)
-  jest.spyOn(console, 'warn').mockImplementation(() => undefined)
-  jest.spyOn(console, 'error').mockImplementation(() => undefined)
+  vi.spyOn(Buffer.prototype, 'toString').mockReturnValue('random string')
+  vi.spyOn(console, 'info').mockImplementation(() => undefined)
+  vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+  vi.spyOn(console, 'error').mockImplementation(() => undefined)
 })
 
 describe('constructor', () => {
@@ -44,7 +44,7 @@ describe('addMeta', () => {
 describe('start', () => {
   it('should log info for action meta', () => {
     const logger = new Logger()
-    logger['info'] = jest.fn()
+    logger['info'] = vi.fn()
     logger.start('message', { prop: 'value' })
     expect(logger.info).toHaveBeenCalledWith('message', {
       actionId: expect.any(String),
@@ -63,7 +63,7 @@ describe('start', () => {
 
   it('should log success', () => {
     const logger = new Logger()
-    logger['info'] = jest.fn()
+    logger['info'] = vi.fn()
     const actions = logger.start('message', { prop: 'value' })
     actions.success({ prop2: 'value2' })
     expect(logger.info).toHaveBeenCalledWith('message_success', {
@@ -75,7 +75,7 @@ describe('start', () => {
 
   it('should log failure', () => {
     const logger = new Logger()
-    logger['error'] = jest.fn()
+    logger['error'] = vi.fn()
     const actions = logger.start('message', { prop: 'value' })
     actions.failure(new Error('500'), { prop2: 'value2' })
     expect(logger.error).toHaveBeenCalledWith('message_failure', new Error('500'), {
@@ -106,7 +106,7 @@ describe('log', () => {
         trace: { loggerId: 'random string' },
         prop1: 'value1',
         prop2: 'value2',
-      })
+      }),
     )
   })
 
@@ -114,7 +114,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('info', 'message')
     expect(console.info).toHaveBeenCalledWith(
-      '{"level":"\x1b[32minfo\x1b[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}'
+      '{"level":"\u001B[32minfo\u001B[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}',
     )
   })
 
@@ -122,7 +122,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('warn', 'message')
     expect(console.warn).toHaveBeenCalledWith(
-      '{"level":"\x1b[33mwarn\x1b[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}'
+      '{"level":"\u001B[33mwarn\u001B[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}',
     )
   })
 
@@ -130,7 +130,7 @@ describe('log', () => {
     const logger = new Logger({ colors: true })
     logger['log']('error', 'message')
     expect(console.error).toHaveBeenCalledWith(
-      '{"level":"\x1b[31merror\x1b[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}'
+      '{"level":"\u001B[31merror\u001B[0m","timestamp":"2022-01-01T00:00:00.000Z","message":"message","trace":{"loggerId":"random string"}}',
     )
   })
 })
@@ -138,7 +138,7 @@ describe('log', () => {
 describe('info', () => {
   it('should log message and meta', () => {
     const logger = new Logger()
-    logger['log'] = jest.fn()
+    logger['log'] = vi.fn()
     logger.info('message', { prop: 'value' })
     expect(logger['log']).toHaveBeenCalledWith('info', 'message', { prop: 'value' })
   })
@@ -147,7 +147,7 @@ describe('info', () => {
 describe('warn', () => {
   it('should log message and meta', () => {
     const logger = new Logger()
-    logger['log'] = jest.fn()
+    logger['log'] = vi.fn()
     logger.warn('message', { prop: 'value' })
     expect(logger['log']).toHaveBeenCalledWith('warn', 'message', { prop: 'value' })
   })
@@ -156,7 +156,7 @@ describe('warn', () => {
 describe('error', () => {
   it('should log message and meta', () => {
     const logger = new Logger()
-    logger['log'] = jest.fn()
+    logger['log'] = vi.fn()
     logger.error('message', new Error('500'), { prop: 'value' })
     expect(logger['log']).toHaveBeenCalledWith('error', 'message', { error: new Error('500'), prop: 'value' })
   })

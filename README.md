@@ -2,16 +2,6 @@
 
 0 dependencies stdout logger, with actions, meta and parsers.
 
-# Table of contents
-
-- [Create a logger](#createalogger)
-- [useFetch](#usefetch)
-- [usePagination](#usepagination)
-- [useForm](#useform)
-- [useCopy](#usecopy)
-- [useDrag/useDrop](#usedrag/usedrop)
-- [Contribute](#contribute)
-
 # Quick Start
 
 First, install the logger using your favourite package manager:
@@ -21,6 +11,8 @@ First, install the logger using your favourite package manager:
 npm install --save @saramorillon/logger
 # yarn
 yarn add @saramorillon/logger
+# pnpm
+pnpm install @saramorillon/logger
 ```
 
 You can now create a new instance of logger:
